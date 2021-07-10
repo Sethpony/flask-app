@@ -3,7 +3,8 @@ import sqlite3
 from werkzeug.exceptions import abort
 #Creates a flask object
 #Use routes to navigate going from different views and URLS
-#CRUD with the DB depending on the route and request method from here 
+#Connect to DB and CRUD with the DB depending on the route and request method from here 
+#essentially this feels like where the controller stuff is happening
 
 
 #connect to db
@@ -39,12 +40,14 @@ def index():
 #go to the post ID
 @app.route('/<int:post_id>')
 def post(post_id):
+    #returns the post corresponding to the post ID
     post = get_post(post_id)
     return render_template('post.html', post=post)
 
 
 @app.route('/create', methods=(['GET', 'POST']))
 def create():
+    #when submit button is clicked
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -52,11 +55,13 @@ def create():
         if not title:
             flash('Title is required!')
         else:
+            #inserts that form data into DB
             conn = get_db_connection()
             conn.execute('INSERT INTO posts (title, content) VALUES (?, ?)',
                          (title, content))
             conn.commit()
             conn.close()
+            #returns back to home page
             return redirect(url_for('index'))
 
     return render_template('create.html')

@@ -1,8 +1,8 @@
 import sqlite3
-
+#initializes the database - creates the database file
 connection = sqlite3.connect('database.db')
 
-
+#creates table using sql file to execute sql statement
 with open('schema.sql') as f:
     connection.executescript(f.read())
 
